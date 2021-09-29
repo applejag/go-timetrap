@@ -59,21 +59,14 @@ func main() {
 	var sum time.Duration
 	for _, entry := range entriesToday {
 		fmt.Println("  -", entry)
-		if entry.Start != nil {
-			if entry.End != nil {
-				d := time.Time(*entry.End).Sub(time.Time(*entry.Start))
-				fmt.Println("d:", d)
-				sum += d
-			} else {
-				d := now.Sub(time.Time(*entry.Start))
-				sum += d
-				fmt.Println("d:", d, "start:", *entry.Start)
-			}
-		}
+		sum += entry.Duration()
 	}
 	if len(entriesToday) == 0 {
 		fmt.Println("  *none*")
 	}
 
 	fmt.Println("time today:      ", sum)
+
+	dayLength := time.Hour * time.Duration(config.DayLengthHours)
+	fmt.Println("time today %:    ", int64(100*sum/dayLength), "%")
 }

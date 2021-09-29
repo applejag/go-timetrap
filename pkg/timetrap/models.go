@@ -3,6 +3,8 @@ package timetrap
 import (
 	"fmt"
 	"time"
+
+	"github.com/jilleJr/go-timetrap/internal/util"
 )
 
 // CREATE TABLE `entries` (
@@ -30,6 +32,17 @@ func (Entry) TableName() string {
 	return "entries"
 }
 
+func (e Entry) Duration() time.Duration {
+	if e.End == nil && e.Start == nil {
+		return 0
+	}
+	if e.End != nil {
+		return time.Time(*e.End).Sub(time.Time(*e.Start))
+	} else {
+		return time.Now().Sub(time.Time(*e.Start))
+	}
+}
+
 func (e Entry) String() string {
 	var (
 		start = "     "
@@ -45,7 +58,7 @@ func (e Entry) String() string {
 	if e.Note != nil {
 		note = *e.Note
 	}
-	return fmt.Sprintf("(%d) %s - %s %s", e.ID, start, end, note)
+	return fmt.Sprintf("(%d) %s - %s  %7s  %s", e.ID, start, end, util.FormatDuration(e.Duration()), note)
 }
 
 type Meta struct {
