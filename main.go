@@ -9,7 +9,17 @@ import (
 )
 
 func main() {
-	db, err := timetrap.NewDB("/home/kalle/.local/share/timetrap/timetrap.db")
+	config, err := timetrap.NewConfigLocal()
+	if err != nil {
+		fmt.Println("err:", err)
+		os.Exit(1)
+	}
+	if config.DatabaseFile == "" {
+		fmt.Println("err: no database file specified in config:", timetrap.DefaultConfigPath)
+		os.Exit(1)
+	}
+
+	db, err := timetrap.NewDB(config.DatabaseFile)
 	if err != nil {
 		fmt.Println("err:", err)
 		os.Exit(1)
